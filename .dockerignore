@@ -1,7 +1,5 @@
 .git/
 .gitignore
-.env
-.env.local
 **/.gitkeep
 **/.DS_Store
 .dockerignore
@@ -13,3 +11,5 @@ coverage/
 *logs
 npm-debug.log
 docker
+**.env**
+.env.*

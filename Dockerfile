@@ -1,27 +1,19 @@
 FROM node:16-alpine AS build
 
+ARG DATABASE_URL
+ENV DATABASE_URL ${DATABASE_URL}
+
 WORKDIR /app
 
 COPY package.json yarn.lock ./
+COPY db/ ./db/
 RUN yarn install --frozen-lockfile
-COPY . .
 RUN yarn blitz prisma migrate deploy --preview-feature
+
+COPY . .
 RUN yarn blitz prisma generate && yarn build
 
-# RUN npm prune --production
+EXPOSE 3001
 
-# create a production image
-FROM node:16-alpine
-COPY --from=build /app /
-EXPOSE 3000
+CMD  yarn start
 
-CMD yarn blitz prisma generate && yarn start
-
-
-
-# note for docker command
-# docker build . -t blitzslim[image name]
-# docker run -d --restart unless-stopped -p 3001:3000 -it --volume //d/blitz:/public/media  --name blitzdock ekaluk52003/blitzblog
-
-
-# docker run -d --restart unless-stopped -p 3600:3000 --name blitzblog[container name] ekaluk52003/blitzblog[imagename]
